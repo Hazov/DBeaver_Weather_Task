@@ -1,1 +1,6 @@
-# DBeaver_Weather_Task1
+# DBeaver_Weather_Task
+
+Каджый запрос пользователя должен содержать в себе адрес. Если его нет, то в ответ на широту и долготу он передается вместе с погодой пользователю. Чтобы в следущий раз пользователь обращался с адресом. Каждая погода проксируется и записывается в базу данных. Так как погода изменчива (по крайней мере днем/ночью), то из базы (или прокси) берется только актуальная погода, за что отвечает переменная EXPIRED_TIME (установлена на 30 минут). В БД добавлена новая таблица weather_location с внешним ключом к weather_history. В weather_history добавлена колонка timestamp, начальная колонка date при этом удалена не была.
+
+
+Each user request must contain an address. If it is not present, then in response to latitude and longitude, it is transmitted along with the weather to the user. So that the next time the user accesses the address. Each weather is proxied and recorded in the database. Since the weather is changeable (at least day/night), only the current weather is taken from the database (or proxy), for which the EXPIRED_TIME variable is responsible (set to 30 minutes). A new weather_location table with a foreign key to weather_history has been added to the database. The timestamp column was added to weather_history, the initial date column was not deleted.
