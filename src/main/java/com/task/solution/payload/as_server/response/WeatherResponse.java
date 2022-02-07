@@ -11,4 +11,15 @@ public class WeatherResponse {
     GeoLocation location;
     String temp;
 
+    private WeatherResponse() {
+        location = null;
+        temp = null;
+    }
+
+    public static WeatherResponse empty(){
+        return new WeatherResponse();
+    }
+    public boolean isEmpty(){
+        return this.location == null || this.temp == null;
+    }
 }

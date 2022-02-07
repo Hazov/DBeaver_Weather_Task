@@ -31,13 +31,16 @@ public class WeatherService {
     @Autowired
     WeatherProxy weatherProxy;
 
-    @Value("${expired-time}")
-    private Long EXPIRED_TIME;
+    @Value("${expiration-time}")
+    private Long EXPIRATION_TIME;
     private static final String YANDEX_WEATHER_URL = "https://api.weather.yandex.ru/v2/forecast";
+    Date dateNow;
 
     public WeatherResponse getWeather(String country, String city, String locality, float lat, float lon, String lang) {
+        if(country == null || city == null)
+            getWeather(lat, lon, lang);
         //search in proxy
-        Date dateNow = new Date(System.currentTimeMillis());
+        dateNow = new Date(System.currentTimeMillis());
         GeoLocation geoLocation = new GeoLocation(country, city, locality);
         Optional<String> temp = weatherProxy.getTemp(geoLocation, dateNow);
         if(temp.isPresent())
@@ -47,12 +50,12 @@ public class WeatherService {
         if(geoLocationOpt.isPresent()){
             Location location = geoLocationOpt.get();
             Weather dbWeather = weatherRepository.findByLocation(location);
-            if(dateNow.getTime() - dbWeather.getDate().getTime() < EXPIRED_TIME)
+            if(dateNow.getTime() - dbWeather.getDate().getTime() < EXPIRATION_TIME)
                 return new WeatherResponse(geoLocation, dbWeather.getValue());
         }
         else
             return getWeather(lat, lon, lang);
-        return null;
+        return WeatherResponse.empty();
     }
     public WeatherResponse getWeather(float lat, float lon, String lang) {
         YandexWeatherResponse weatherFromYandex;
@@ -74,7 +77,7 @@ public class WeatherService {
         } catch (BadResponseFromYandexWeatherException e) {
             e.printStackTrace();
         }
-        return null;
+        return WeatherResponse.empty();
     }
 
     void saveWeather(Weather weather) {
@@ -82,7 +85,7 @@ public class WeatherService {
         Weather dbWeather;
         if(dbWeatherOpt.isPresent()){
             dbWeather = dbWeatherOpt.get();
-            if (dbWeather.getDate().getTime() - weather.getDate().getTime() < EXPIRED_TIME){
+            if (dbWeather.getDate().getTime() - weather.getDate().getTime() < EXPIRATION_TIME){
                 return;
             }
         }

@@ -14,8 +14,8 @@ import java.util.Optional;
 
 @Data
 public class WeatherProxy {
-    @Value(value = "${expired-time}")
-    private Long EXPIRED_TIME;
+    @Value(value = "${expiration-time}")
+    private Long EXPIRATION_TIME;
     private Map<GeoLocation, Pair<Date,String>> valueAndDateByGeoMap;
 
     public WeatherProxy() {
@@ -24,7 +24,7 @@ public class WeatherProxy {
 
     public Optional<String> getTemp(GeoLocation geoLocation, Date now) {
         Pair<Date, String> dateTempPair = valueAndDateByGeoMap.get(geoLocation);
-        if(dateTempPair == null || now.getTime() - dateTempPair.getKey().getTime() > EXPIRED_TIME)
+        if(dateTempPair == null || now.getTime() - dateTempPair.getKey().getTime() > EXPIRATION_TIME)
             return Optional.empty();
         return Optional.of(dateTempPair.getValue());
 

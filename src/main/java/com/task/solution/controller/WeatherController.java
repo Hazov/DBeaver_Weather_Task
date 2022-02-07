@@ -23,14 +23,10 @@ public class WeatherController {
                                                @RequestParam String lang,
                                                @RequestParam(required = false) String country,
                                                @RequestParam(required = false) String city,
-                                               @RequestParam (required = false) String locality)
-    {
-
-        WeatherResponse weatherResponse;
-        if (country != null && city != null)
-            weatherResponse = weatherService.getWeather(country, city, locality, lat, lon, lang);
-        else
-            weatherResponse = weatherService.getWeather(lat, lon, lang);
+                                               @RequestParam (required = false) String locality) {
+        WeatherResponse weatherResponse = weatherService.getWeather(country, city, locality, lat, lon, lang);
+        if(weatherResponse.isEmpty())
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(weatherResponse, HttpStatus.OK);
     }
 
